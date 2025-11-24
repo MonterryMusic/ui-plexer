@@ -153,7 +153,7 @@ export default function Channel({initState}){
               </div>
               <div className={styles.faders}>
                 <meter className={styles.vertSlider} value={level}>at 20/100</meter>
-                    <MixerFader/>
+                <MixerFader/>
               </div>
             </div>
 }

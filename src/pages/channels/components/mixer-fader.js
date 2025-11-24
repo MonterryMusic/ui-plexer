@@ -8,14 +8,14 @@ import styles from "@/styles/fader.module.css"
 export default function MixerFader() {
   const faderRef = useRef(null)
   const [level, setLevel] = useState(0)
+  const [val, setVal] = useState(0)
 
   useEffect(() => {
     if (!faderRef.current) return
 
     // Interact.js initialisieren
     interact(faderRef.current).draggable({
-      origin: 'self',
-      inertia: true,
+      inertia: false,
       axis: "y",
       modifiers: [
         interact.modifiers.restrictRect({
@@ -26,7 +26,7 @@ export default function MixerFader() {
       listeners: {
         move(event) {
           const sliderHeight = interact.getElementRect(event.target).height;
-          const value = 1- event.pageY / sliderHeight;
+          const value = event.pageY / sliderHeight;
           const clampVal =  Math.min(Math.max(value, 0), 1)
 
           //const y = (parseFloat(target.dataset.y) || 0) - event.dy
@@ -36,9 +36,15 @@ export default function MixerFader() {
 
           //target.dataset.y = y
           //event.target.style.translate = `translateY(${value}px)`
-          setLevel(clampVal)
-          event.target.style.paddingBottom = (clampVal * 100) + '%'
+          setVal(v => v +clampVal)
+          //event.target.style.paddingBottom = ((clampVal) * 100) + '%'
           //target.style.bottom = `${clampedY}px`
+        },
+        up(event) {
+          const sliderHeight = interact.getElementRect(event.target).height;
+          const value = event.pageY / sliderHeight;
+          const clampVal =  Math.min(Math.max(value, 0), 1)
+          setVal(v => v + clampVal)
         }
       }
     })
@@ -49,13 +55,10 @@ export default function MixerFader() {
 
   return (
     <div>
-      <div 
-        ref={faderRef}
-
-        className={styles.slider}
-      >
+      <div ref={faderRef} style={{paddingTop: val*100+"%"}} className={styles.slider}    >
+        <div backgroundColor={'#000000'} height={"100%"}></div>
       </div> 
-      <span>{level}</span>
+      <span></span>
     </div>
   )
 }
